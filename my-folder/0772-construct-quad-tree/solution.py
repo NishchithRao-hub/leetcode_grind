@@ -12,23 +12,21 @@ class Node:
 
 class Solution:
     def construct(self, grid: List[List[int]]) -> 'Node':
-        return self.helper(grid, 0, 0, len(grid))
+        def dfs(n, row, col):
+            if n == 1:
+                return Node(grid[row][col] == 1, True)
 
-    def allSame(self, grid, i, j, width):
-        for a in range(i , i + width):
-            for b in range(j, j + width):
-                if grid[a][b] != grid[i][j]:
-                    return False
-        return True
+            mid = n // 2
+            topLeft = dfs(mid, row, col)
+            topRight = dfs(mid, row, col+mid)
+            bottomLeft = dfs(mid, row+mid, col)
+            bottomRight = dfs(mid, row+mid, col+mid)
 
-    def helper(self, grid , i, j, width):
-        if self.allSame(grid, i, j, width):
-            return Node(grid[i][j] == 1, True)
+            if (topLeft.isLeaf and topRight.isLeaf and 
+                bottomLeft.isLeaf and bottomRight.isLeaf and topLeft.val == topRight.val == bottomLeft.val == bottomRight.val):
+                return Node(topLeft.val, True)
 
-        node = Node(True, False)
-        node.topLeft = self.helper(grid, i, j, width // 2)
-        node.topRight = self.helper(grid, i, j + width // 2, width // 2)
-        node.bottomLeft = self.helper(grid, i + width // 2, j, width // 2)
-        node.bottomRight = self.helper(grid, i + width // 2, j + width // 2, width // 2)
-        return node
+            return Node(False, False, topLeft, topRight, bottomLeft, bottomRight)
 
+        return dfs(len(grid), 0, 0)
+        
