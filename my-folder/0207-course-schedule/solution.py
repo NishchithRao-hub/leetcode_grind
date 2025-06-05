@@ -1,27 +1,27 @@
 class Solution:
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-        adj =[[] for _ in range(numCourses)]
-        indegree = [0] * numCourses
-        result = []
+        preMap = {i: [] for i in range(numCourses)}
+        for course, prereq in prerequisites:
+            preMap[course].append(prereq)
 
-        for pair in prerequisites:
-            course = pair[0]
-            prerequisite = pair[1]
-            adj[prerequisite].append(course)
-            indegree[course] += 1
+        visit = set()
+        def dfs(course):
+            if course in visit:
+                return False
+            if preMap[course] == []:
+                return True
+            
+            visit.add(course)
+            for prereq in preMap[course]:
+                if not dfs(prereq):
+                    return False
 
-        queue = deque()
-        for i in range(numCourses):
-            if indegree[i] == 0:
-                queue.append(i)
+            visit.remove(course)
+            preMap[course] = []
+            return True
 
-        while queue:
-            current = queue.popleft()
-            result.append(current)
-
-            for next_course in adj[current]:
-                indegree[next_course] -=1
-                if indegree[next_course] == 0:
-                    queue.append(next_course)
+        for c in range(numCourses):
+            if not dfs(c):
+                return False
+        return True
         
-        return len(result) == numCourses
