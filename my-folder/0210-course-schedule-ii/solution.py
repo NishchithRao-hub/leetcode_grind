@@ -1,36 +1,29 @@
-from collections import defaultdict, deque
-
 class Solution:
     def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
-        # Step 1: Build the graph
-        graph = defaultdict(list)
+        indegree = [0] * numCourses
+        courses = [[] for i in range(numCourses)]
         for course, prereq in prerequisites:
-            graph[prereq].append(course)
+            indegree[course] += 1
+            courses[prereq].append(course)
 
-        # Step 2: Calculate the in-degree of each node
-        in_degree = [0] * numCourses
-        for course,prereq in prerequisites:
-            in_degree[course] += 1
-        
-        # Step 3: Perform topological sort
-        queue = deque()
-        for i in range(numCourses):
-            if in_degree[i] == 0:
-                queue.append(i)
-        
+        q = deque()
+        for n in range(numCourses):
+            if indegree[n] == 0:
+                q.append(n)
+
+        done = 0
         result = []
-        while queue:
-            node = queue.popleft()
+        while q:
+            node = q.popleft()
             result.append(node)
-            for neighbor in graph[node]:
-                in_degree[neighbor] -= 1
-                if in_degree[neighbor] == 0:
-                    queue.append(neighbor)
-        
-        # Step 4: Check for cycle
-        if len(result) < numCourses:
+            done += 1
+            for neighbor in courses[node]:
+                indegree[neighbor] -= 1
+                if indegree[neighbor] == 0:
+                    q.append(neighbor)
+
+        if done != numCourses:
             return []
-
         return result
-
+        
         
