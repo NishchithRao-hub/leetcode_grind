@@ -1,37 +1,32 @@
 class Solution:
     def pacificAtlantic(self, heights: List[List[int]]) -> List[List[int]]:
-        rows = len(heights)
-        cols = len(heights[0])
+        rows, cols = len(heights),len(heights[0])
+        atl = set()
+        pac = set()
 
-        pacific_visited = set()
-        atlantic_visited = set()
-
-
-        def dfs(visited, row, col, start):
-            if row < 0 or row >= rows or col < 0 or col >= cols:
+        def dfs(r, c, visited, prevHeight):
+            if ((r, c) in visited or r < 0 or c < 0 or 
+                r == rows or c == cols or heights[r][c] < prevHeight):
                 return
 
-            if (row, col) in visited:
-                return
-            
-            if heights[row][col] < start:
-                return
-            
-            visited.add((row, col))
+            visited.add((r, c))
+            dfs(r, c+1, visited, heights[r][c])
+            dfs(r, c-1, visited, heights[r][c])
+            dfs(r+1, c, visited, heights[r][c])
+            dfs(r-1, c, visited, heights[r][c])
 
-            dfs(visited, row+1, col, heights[row][col])
-            dfs(visited, row-1, col, heights[row][col])
-            dfs(visited, row, col+1, heights[row][col])
-            dfs(visited, row, col-1, heights[row][col])
+        for c in range(cols):
+            dfs(0, c, pac, heights[0][c])
+            dfs(rows-1, c, atl, heights[rows-1][c])
 
-        for col in range(cols):
-            dfs(pacific_visited, 0, col, heights[0][col]) #1st row
-            dfs(atlantic_visited, rows-1, col, heights[rows-1][col]) #last row
+        for r in range(rows):
+            dfs(r, 0, pac, heights[r][0])
+            dfs(r, cols-1, atl, heights[r][cols-1])
 
-        for row in range(rows):
-            dfs(pacific_visited, row, 0, heights[row][0]) #1st col
-            dfs(atlantic_visited, row, cols-1, heights[row][cols-1]) #last col
-
-        result = [list(value) for value in pacific_visited & atlantic_visited]
+        result = []
+        for r in range(rows):
+            for c in range(cols):
+                if (r,c) in atl and (r,c) in pac:
+                    result.append((r, c))
 
         return result
