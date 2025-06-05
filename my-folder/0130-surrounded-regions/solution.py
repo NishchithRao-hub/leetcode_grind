@@ -3,42 +3,33 @@ class Solution:
         """
         Do not return anything, modify board in-place instead.
         """
+        rows, cols  = len(board), len(board[0])
 
-        o = "O"
-        m = len(board)
-        n = len(board[0])
+        def capture(r, c):
+            if (r < 0 or c < 0 or r == rows or c == cols or board[r][c] != "O"):
+                return
 
-        queue = deque()
-        for i in range(m):
-            if board[i][0] == o:
-                queue.append((i,0))
-            if board[i][n-1] == o:
-                queue.append((i,n-1))
-            
-        for j in range(n):
-            if board[0][j] == o:
-                queue.append((0,j))
-            if board[m-1][j] == o:
-                queue.append((m-1,j))
+            board[r][c] = "T"
+            capture(r+1, c)
+            capture(r-1, c)
+            capture(r, c+1)
+            capture(r, c-1)
 
-        def inBounds(i,j):
-            return (0 <= i < m) and (0 <= j < n)
-        
-        while queue:
-            i,j = queue.popleft()
-            board[i][j] = "*"
+        for r in range(rows):
+            if board[r][0] == "O":
+                capture(r, 0)
+            if board[r][cols-1] == "O":
+                capture(r, cols-1)   
 
-            for x, y in [(i+1,j), (i-1,j), (i,j+1), (i, j-1)]:
-                if not inBounds(x,y):
-                    continue
-                if board[x][y] != o:
-                    continue
-                queue.append((x,y))
-                board[x][y] = "*"
+        for c in range(cols):
+            if board[0][c] == "O":
+                capture(0, c)
+            if board[rows-1][c] == "O":
+                capture(rows-1, c)
 
-        for i in range(m):
-            for j in range(n):
-                if board[i][j] == o:
-                    board[i][j] = 'X'
-                elif board[i][j] == "*":
-                    board[i][j] = o        
+        for r in range(rows):
+            for c in range(cols):
+                if board[r][c] == "O":
+                    board[r][c] = "X"
+                elif board[r][c] == "T":
+                    board[r][c] = "O"  
