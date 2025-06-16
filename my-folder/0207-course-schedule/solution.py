@@ -1,27 +1,29 @@
 class Solution:
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-        preMap = {i: [] for i in range(numCourses)}
+
+        # Topological sort (Kahn's algorithm)
+        indegree = [0] * numCourses
+        courses = [[] for _ in range(numCourses)]
+
         for course, prereq in prerequisites:
-            preMap[course].append(prereq)
+            indegree[course] += 1
+            courses[prereq].append(course)
 
-        visit = set()
-        def dfs(course):
-            if course in visit:
-                return False
-            if preMap[course] == []:
-                return True
-            
-            visit.add(course)
-            for prereq in preMap[course]:
-                if not dfs(prereq):
-                    return False
-
-            visit.remove(course)
-            preMap[course] = []
-            return True
-
-        for c in range(numCourses):
-            if not dfs(c):
-                return False
-        return True
+        q = deque()
+        for n in range(numCourses):
+            if indegree[n] == 0:
+                q.append(n)
         
+        done = 0
+        while q:
+            node = q.popleft()
+            done += 1
+            for nei in courses[node]:
+                indegree[nei] -= 1
+                if indegree[nei] == 0:
+                    q.append(nei)
+
+        return done == numCourses
+
+# Time complexity = O(V+E)
+# Space complexity = O(V+E)
