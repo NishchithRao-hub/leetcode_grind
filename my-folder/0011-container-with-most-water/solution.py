@@ -1,17 +1,22 @@
 class Solution:
     def maxArea(self, height: List[int]) -> int:
-        left = 0
-        right = len(height) - 1
-        maxArea = 0
+
+        # Two pointer solution
+        left, right = 0, len(height) - 1
+        result = 0
 
         while left < right:
-            currArea = min(height[left], height[right]) * (right - left)
-            maxArea = max(maxArea, currArea)
+            area = min(height[left], height[right]) * (right - left)
+            result = max(result, area)
 
             if height[left] < height[right]:
                 left += 1
             else:
                 right -= 1
 
-        return maxArea
+        return result
+
+# Time complexity = O(n)
+# Space complexity = O(1)
+        
         
