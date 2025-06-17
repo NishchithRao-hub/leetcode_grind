@@ -5,17 +5,44 @@
 #         self.next = next
 class Solution:
     def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
-        head = temp = ListNode()
-        arr = []
+    
+    # Divide and conquer solution
+        if not lists or len(lists) == 0:
+            return None
+        return self.divide(lists, 0, len(lists)-1)
 
-        for l in lists:
-            while l != None:
-                arr.append(l.val)
-                l = l.next
+    def divide(self, lists, left, right):
+        if left > right:
+            return None
+        if left == right:
+            return lists[right]
 
-        for val in sorted(arr):
-            temp.next = ListNode()
-            temp = temp.next
-            temp.val = val
+        mid = left + (right-left) // 2
+        left = self.divide(lists, left, mid)
+        right = self.divide(lists, mid+1, right)
 
-        return head.next
+        return self.conquer(left, right)
+
+    def conquer(self, list1, list2):
+        dummy = ListNode(0)
+        curr = dummy
+
+        while list1 and list2:
+            if list1.val <= list2.val:
+                curr.next = list1
+                list1 = list1.next
+            else:
+                curr.next = list2
+                list2 = list2.next
+            curr = curr.next
+
+        if list1:
+            curr.next = list1
+        if list2:
+            curr.next = list2
+        
+        return dummy.next
+
+# Time complexity: O(n logk)
+# Space complexity: O(log k)
+# n = total number of nodes, k = number of lists
