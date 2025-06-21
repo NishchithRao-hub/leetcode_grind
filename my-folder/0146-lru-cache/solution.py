@@ -1,7 +1,7 @@
 class Node:
-    def __init__(self, key, val):
+    def __init__(self, key, value):
         self.key = key
-        self.val = val
+        self.value = value
         self.prev = self.next = None
 
 class LRUCache:
@@ -14,20 +14,19 @@ class LRUCache:
 
     def remove(self, node):
         prev, nxt = node.prev, node.next
-        prev.next, nxt.prev = nxt, prev
+        prev.next, nxt.prev = nxt, prev 
 
     def insert(self, node):
         prev, nxt = self.right.prev, self.right
         prev.next = nxt.prev = node
-        node.next, node.prev = nxt, prev
+        node.next, node.prev = nxt, prev      
 
-        
     def get(self, key: int) -> int:
         if key in self.cache:
             self.remove(self.cache[key])
             self.insert(self.cache[key])
-            return self.cache[key].val
-        return -1
+            return self.cache[key].value
+        return -1    
 
     def put(self, key: int, value: int) -> None:
         if key in self.cache:
@@ -40,6 +39,8 @@ class LRUCache:
             self.remove(lru)
             del self.cache[lru.key]
 
+# Time complexity = O(1) for each put() and get()
+# Space complexity = O(n)
 
 # Your LRUCache object will be instantiated and called as such:
 # obj = LRUCache(capacity)
