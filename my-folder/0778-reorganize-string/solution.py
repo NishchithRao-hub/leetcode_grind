@@ -1,12 +1,14 @@
 class Solution:
     def reorganizeString(self, s: str) -> str:
-        count = Counter(s)
+        # Max heap frequency count approach
+        count  = Counter(s)
         maxHeap = [[-cnt, char] for char, cnt in count.items()]
         heapq.heapify(maxHeap)
 
         prev = None
-        result  = ""
-        while maxHeap or prev:
+        result = ""
+
+        while prev or maxHeap:
             if prev and not maxHeap:
                 return ""
 
@@ -22,4 +24,7 @@ class Solution:
                 prev = [cnt, char]
 
         return result
+
+# Time complexity = O(n)
+# Space complexity = O(n) -> output, O(1) -> extra space
         
