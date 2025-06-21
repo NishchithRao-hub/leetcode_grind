@@ -1,5 +1,6 @@
 class Solution:
     def longestPalindrome(self, s: str) -> str:
+        # Two pointer solution
         resId = 0
         resLen = 0
 
@@ -23,4 +24,6 @@ class Solution:
                 r += 1
         
         return s[resId: resId + resLen]
-        
+
+# Time complexity = O(n^2)
+# Space complexity = O(1) -> extra space, O(n) -> output
