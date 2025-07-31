@@ -1,58 +1,19 @@
-class Node{
-    int key;
-    int val;
-    Node next;
-    Node(int key, int val){
-        this.key=key;
-        this.val=val;
-        this.next=null;
-    }
-}
 class MyHashMap {
-    private Node map[];
+    private int[] map;
     public MyHashMap() {
-        map = new Node[100];
-        for(int i=0;i< 100; i++){
-            map[i] = new Node(-1,-1);
-        }
-    }    
+        map = new int[10000001];
+        Arrays.fill(map, -1);
+    }
     public void put(int key, int value) {
-        int hash = hash(key);
-        Node current = map[hash];
-        while(current.next!=null){
-            if(current.next.key == key){
-                current.next.val=value;
-                return;
-            }
-            current=current.next;
-        }
-        current.next = new Node(key,value);
+        map[key] = value;
     }
     
     public int get(int key) {
-        int hash = hash(key);
-        Node current = map[hash].next;
-        while(current!=null){
-            if(current.key == key)
-                return current.val;
-            current = current.next;
-        }
-        return -1;
+        return map[key];
     }
     
     public void remove(int key) {
-        int hash = hash(key);
-        Node current = map[hash];
-        while(current.next!=null){
-            if(current.next.key ==  key){
-                current.next = current.next.next;
-                return;
-            }
-            current=current.next;
-        }
-    }
-    public int hash(int key){
-        return key%100;
+        map[key] = -1;
     }
 }
 
