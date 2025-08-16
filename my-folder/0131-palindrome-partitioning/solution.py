@@ -1,17 +1,29 @@
-class Solution(object):
-    def partition(self, s):
-        def palindrome_check(word):
-            return word == word[::-1]
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        result, part = [], []
         
-        def backtrack(start, path):
-            if start == len(s):
-                result.append(path[:])
+        def dfs(i):
+            if i >= len(s):
+                result.append(part.copy())
                 return
-            for end in range(start + 1, len(s) + 1):
-                if palindrome_check(s[start:end]):
-                    backtrack(end, path + [s[start:end]])
-
-        result = []
-        backtrack(0, [])
+            
+            for j in range(i, len(s)):
+                if self.isPalindrome(s, i, j):
+                    part.append(s[i:j+1])
+                    dfs(j+1)
+                    part.pop()
+                    
+        dfs(0)
         return result
+
+
+    def isPalindrome(self, s, l, r):
+        while l < r:
+            if s[l] != s[r]:
+                return False
+            l, r = l+1, r-1
+        return True
+
+# Time -> O(n*2^n)
+# Space -> O(n) extra, O(n*2^n) for output
         
