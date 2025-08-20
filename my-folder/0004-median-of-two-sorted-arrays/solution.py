@@ -1,52 +1,32 @@
 class Solution:
     def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
-        n = len(nums1)
-        m = len(nums2)
-        i = 0
-        j = 0
-        m1 = 0
-        m2 = 0
+        # Binary search optimal soln
+        A, B = nums1, nums2
+        total_length = len(A) + len(B)
+        half = total_length // 2
 
-        for _ in range(0, (n+m)//2 + 1):
-            m2 = m1
-            if i<n and j<m:
-                if nums1[i] > nums2[j]:
-                    m1 = nums2[j]
-                    j += 1
-                else:
-                    m1 = nums1[i]
-                    i += 1
-            elif i<n:
-                m1 = nums1[i]
-                i += 1
+        if len(B) < len(A):
+            A, B = B, A
+
+        l, r = 0, len(A)-1
+        while True:
+            i = (l+r)//2
+            j = half-i-2
+
+            Aleft = A[i] if i >= 0 else float('-infinity')
+            Aright = A[i+1] if i+1 < len(A) else float('infinity')
+            Bleft = B[j] if j >= 0 else float('-infinity')
+            Bright = B[j+1] if j+1 < len(B) else float('infinity')
+
+            if Aleft <= Bright and Bleft <= Aright:
+                if total_length % 2:
+                    return min(Aright, Bright)
+                return (max(Aleft, Bleft) + min(Aright, Bright)) / 2
+            elif Aleft > Bright:
+                r = i-1
             else:
-                m1 = nums2[j]
-                j += 1
-        
-        if (n+m)%2 == 1:
-            return float(m1)
-        else:
-            res = float(m1) + float(m2)
-            return res/2.0
+                l = i+1
 
-#Solution2: Brute Force - Merge and Sort. 
-# class Solution:
-#     def findMedianSortedArrays(self, nums1, nums2):
-#         # Merge the arrays into a single sorted array.
-#         merged = nums1 + nums2
-
-#         # Sort the merged array.
-#         merged.sort()
-
-#         # Calculate the total number of elements in the merged array.
-#         total = len(merged)
-
-#         if total % 2 == 1:
-#             # If the total number of elements is odd, return the middle element as the median.
-#             return float(merged[total // 2])
-#         else:
-#             # If the total number of elements is even, calculate the average of the two middle elements as the median.
-#             middle1 = merged[total // 2 - 1]
-#             middle2 = merged[total // 2]
-#             return (float(middle1) + float(middle2)) / 2.0
+# Time -> O(log min(m, n)) n - length of nums1, m - length of nums2
+# Space -> O(1)
         
