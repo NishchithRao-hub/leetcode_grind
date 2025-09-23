@@ -1,13 +1,18 @@
 class Solution:
     def simplifyPath(self, path: str) -> str:
-        output = []
-        directory = path.split('/')
-        for dir in directory:
-            if dir == "." or not dir:
-                continue
-            elif dir == "..":
-                if output:
-                    output.pop()
-            else:
-                output.append(dir)
-        return '/' + '/'.join(output)
+        # Stack
+        stack = []
+        paths = path.split('/')
+
+        for curr in paths:
+            if curr == "..":
+                if stack:
+                    stack.pop()
+            elif curr != "" and curr != ".":
+                stack.append(curr)
+        
+        return "/" + "/".join(stack)
+        
+# Time -> O(n)
+# Space -> O(n)
+        
