@@ -6,18 +6,29 @@
 #         self.right = None
 
 class Solution:
+    # BFS solution
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
-        if root is None or root==p or root==q:
-            return root
+        parent = {root: None}
+        queue = deque([root])
 
-        left = self.lowestCommonAncestor(root.left, p, q)
-        right = self.lowestCommonAncestor(root.right, p, q)
+        while p not in parent or q not in parent:
+            node = queue.popleft()
+            if node.left:
+                parent[node.left] = node
+                queue.append(node.left)
+            if node.right:
+                parent[node.right] = node
+                queue.append(node.right)
 
-        if left and right:
-            return root
+        ancestors =  set()
+        while p:
+            ancestors.add(p)
+            p = parent[p]
 
-        return left if left else right
+        while q not in ancestors:
+            q = parent[q]
 
+        return q
 
-        
-        
+# Time -> O(n)
+# Space -> O(n)        
